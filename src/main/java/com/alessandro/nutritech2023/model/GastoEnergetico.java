@@ -6,21 +6,26 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
 @Entity
-@Table(name = "users")
+@Table(name = "gasto_energetico")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class User {
-
+public class GastoEnergetico {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String email;
-    private String password;
-    private String name;
-    private String userType;
-    private String status;
+
+    @ManyToOne
+    @JoinColumn(name = "paciente_id", nullable = false)
+    private Paciente paciente;
+
+    @Column(nullable = false)
+    private Double valor;
+
+    @Column(nullable = false)
+    private LocalDate data;
 }
