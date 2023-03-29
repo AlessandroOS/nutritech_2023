@@ -1,6 +1,7 @@
 package com.alessandro.nutritech2023.controller;
 
 import com.alessandro.nutritech2023.exceptions.PacienteNotFoundException;
+import com.alessandro.nutritech2023.model.GastoEnergetico;
 import com.alessandro.nutritech2023.model.dto.GastoEnergeticoDto;
 import com.alessandro.nutritech2023.model.dto.PacienteDto;
 import com.alessandro.nutritech2023.model.dto.PacienteIMCResponse;
@@ -11,6 +12,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
@@ -47,10 +49,9 @@ public class PacienteController {
             PacienteDto pacienteDto = modelMapper.map(paciente, PacienteDto.class);
             return ResponseEntity.ok(pacienteDto);
         } else {
-            throw new PacienteNotFoundException("Paciente não encontrado com o ID " + id);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Paciente não encontrado com o ID " + id);
         }
     }
-
     @GetMapping
     public ResponseEntity<List<PacienteDto>> getAllPacientes() {
         List<Paciente> pacientes = pacienteService.getAllPacientes();
@@ -86,15 +87,16 @@ public class PacienteController {
             GastoEnergeticoDto gastoEnergetico = gastoEnergeticoService.salvaEcalculaGastoEnergetico(id);
             return ResponseEntity.ok(gastoEnergetico);
         } catch (EntityNotFoundException e) {
-            return ResponseEntity.notFound().build();
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
 
     @GetMapping("/{id}/get_gasto_energetico")
     public ResponseEntity<GastoEnergeticoDto> getGastoEnergetico(@PathVariable Long id) {
         try {
-            GastoEnergeticoDto gastoEnergetico = gastoEnergeticoService.getGastoEnergetico(id);
-            return ResponseEntity.ok(gastoEnergetico);
+            GastoEnergetico gastoEnergetico = gastoEnergeticoService.getGastoEnergetico(id);
+            GastoEnergeticoDto gastoEnergeticoDto = modelMapper.map(gastoEnergetico, GastoEnergeticoDto.class);
+            return ResponseEntity.ok(gastoEnergeticoDto);
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
         }

@@ -10,6 +10,7 @@ import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class GastoEnergeticoService {
@@ -25,6 +26,12 @@ public class GastoEnergeticoService {
         Paciente paciente = pacienteRepository.findById(pacienteId)
                 .orElseThrow(() -> new EntityNotFoundException("Paciente não encontrado"));
 
+        Optional<GastoEnergetico> optionalGastoEnergetico = gastoEnergeticoRepository.findByPacienteId(pacienteId);
+        if (optionalGastoEnergetico.isPresent()) {
+            GastoEnergetico existingGastoEnergetico = optionalGastoEnergetico.get();
+            gastoEnergeticoRepository.delete(existingGastoEnergetico);
+        }
+
         CalculaGastoEnergetico calculaGastoEnergetico = new CalculaGastoEnergetico(
                 new BigDecimal(paciente.getAltura()), getPesoRecente(paciente).getValor(), paciente.getIdade(), paciente.getGenero());
         Double resultado = calculaGastoEnergetico.calculaIMC();
@@ -33,14 +40,15 @@ public class GastoEnergeticoService {
         return new GastoEnergeticoDto(resultado);
     }
 
-    public GastoEnergeticoDto getGastoEnergetico(Long pacienteId) {
+
+    public GastoEnergetico getGastoEnergetico(Long pacienteId) {
         Paciente paciente = pacienteRepository.findById(pacienteId)
                 .orElseThrow(() -> new EntityNotFoundException("Paciente não encontrado"));
 
         GastoEnergetico gastoEnergetico = gastoEnergeticoRepository.findByPacienteId(pacienteId)
                 .orElseThrow(() -> new EntityNotFoundException("Gasto energético não encontrado para o paciente"));
 
-        return new GastoEnergeticoDto(gastoEnergetico.getValor());
+        return new GastoEnergetico(paciente, gastoEnergetico.getValor());
     }
 
     private Peso getPesoRecente(Paciente paciente) {

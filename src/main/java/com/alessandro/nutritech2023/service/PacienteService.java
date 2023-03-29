@@ -64,7 +64,9 @@ public class PacienteService {
         Paciente paciente = pacienteRepository.findById(pacienteId)
                 .orElseThrow(() -> new EntityNotFoundException("Paciente não encontrado"));
 
-        CalculaImc calculaImc = new CalculaImc(new BigDecimal(paciente.getAltura()), getPesoRecente(paciente).getValor());
+        Peso pesoRecente = getPesoRecente(paciente);
+
+        CalculaImc calculaImc = new CalculaImc(new BigDecimal(paciente.getAltura()), pesoRecente.getValor());
         Imc imc = calculaImc.calcula();
 
         PacienteIMCResponse response = new PacienteIMCResponse();
