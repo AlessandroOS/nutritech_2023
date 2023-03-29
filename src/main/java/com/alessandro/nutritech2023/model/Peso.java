@@ -1,5 +1,6 @@
 package com.alessandro.nutritech2023.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,12 +16,14 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Peso {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "paciente_id", nullable = false)
+    @JsonIgnore
+    @ManyToOne(optional = false)
+    @JoinColumn(nullable = false)
     private Paciente paciente;
 
     @Column(nullable = false)

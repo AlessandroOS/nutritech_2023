@@ -6,6 +6,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDate;
+import java.time.Period;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -24,23 +27,28 @@ public class Paciente {
     private String email;
 
     @Column(nullable = false)
-    private String senha;
-
-    @Column(nullable = false)
     private String nome;
 
     @Enumerated(EnumType.STRING)
     private Genero genero;
 
-    @OneToMany(mappedBy = "paciente")
-    private List<Dieta> dietas;
-
-    @OneToMany(mappedBy = "paciente")
-    private List<Peso> pesos = new java.util.ArrayList<>();
-
     @Column(nullable = false)
     private Double altura;
 
-    @OneToMany(mappedBy = "paciente")
+    @Column(nullable = false)
+    private LocalDate dataNascimento;
+
+    @OneToMany(mappedBy = "paciente", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Dieta> dietas;
+
+    @OneToMany(mappedBy = "paciente", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Peso> pesos = new ArrayList<>();
+
+    @OneToMany(mappedBy = "paciente", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<GastoEnergetico> gastosEnergeticos = new java.util.ArrayList<>();
+
+    public Integer getIdade() {
+        Period diff = Period.between(dataNascimento, LocalDate.now());
+        return diff.getYears();
+    }
 }
