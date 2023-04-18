@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -35,6 +36,7 @@ public class Paciente {
     @Column(nullable = false)
     private Double altura;
 
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
     @Column(nullable = false)
     private LocalDate dataNascimento;
 
@@ -46,6 +48,10 @@ public class Paciente {
 
     @OneToMany(mappedBy = "paciente", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<GastoEnergetico> gastosEnergeticos = new java.util.ArrayList<>();
+
+//    @ManyToOne
+//    @JoinColumn(name = "nutricionista_id")
+//    private Nutricionista nutricionista;
 
     public Integer getIdade() {
         Period diff = Period.between(dataNascimento, LocalDate.now());

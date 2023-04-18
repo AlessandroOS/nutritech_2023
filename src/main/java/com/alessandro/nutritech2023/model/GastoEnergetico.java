@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "gasto_energetico")
@@ -21,6 +22,15 @@ public class GastoEnergetico {
     @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
     private Paciente paciente;
+
+    @Column(nullable = false)
+    private LocalDate dataRegistro;
+
+    @Column(nullable = false)
+    private Double gastoEnergeticoTotal;
+
+    @Column(nullable = false)
+    private Double gastoEnergeticoBasal;
 
     @Column(nullable = false)
     private Double valor;

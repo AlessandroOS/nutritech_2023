@@ -58,7 +58,7 @@ public class GastoEnergeticoService {
             throw new EntityNotFoundException("Não há pesos registrados para este paciente");
         }
 
-        return pesos.stream().max(Comparator.comparing(peso -> peso.getData()))
+        return pesos.stream().max(Comparator.comparing(peso -> peso.getDataRegistro()))
                 .orElseThrow(() -> new EntityNotFoundException("Não foi possível encontrar um peso recente para o paciente"));
     }
 }
